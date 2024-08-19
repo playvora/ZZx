@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<meta charset="UTF-8">
+<meta content="width=device-width, initial-scale=1" name="viewport">
+<title>simple website server</title>
+<h1>simple website server</h1>
+<form id="a">
+    <input id="b" placeholder="enter" required>
+    <button type="submit">Save Page</button>
+</form>
+<h2>recent</h2>
+<ul id="c"></ul>
+<script>
+    async function d() {
+        const e = await fetch('/recent-websites');
+        const f = await e.json();
+
+        const g = document.getElementById('c');
+        g.innerHTML = '';
+        f.forEach(h => {
+            const i = document.createElement('li');
+            const j = document.createElement('a');
+            j.href = h.route;
+            j.textContent = `${h.domain} - ${new Date(h.timestamp).toLocaleString()}`;
+            i.appendChild(j);
+            g.appendChild(i);
+        });
+    }
+
+    document.getElementById('a').addEventListener('submit', async (k) => {
+        k.preventDefault();
+        const l = document.getElementById('b').value;
+
+        const m = await fetch('/save-page', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ url: l })
+        });
+
+        if (m.ok) {
+            alert('good');
+            document.getElementById('b').value = '';
+            d();
+        } else {
+            alert('bad');
+        }
+    });
+
+    d();
+</script>
+</html>
